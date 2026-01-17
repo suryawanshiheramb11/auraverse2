@@ -190,7 +190,8 @@ class Gatekeeper {
             this.handleResults(result);
 
         } catch (error) {
-            this.terminal.log(`ANALYSIS FAILED: ${error.message}`, 'ALERT');
+            this.terminal.log(`ANALYSIS FAILED: ${error.message} (Check Console)`, 'ALERT');
+            console.error("Fetch Error Details:", error);
             document.getElementById('stat-verdict').textContent = "ERROR";
             document.getElementById('stat-verdict').className = "text-lg font-bold text-red-500";
         }

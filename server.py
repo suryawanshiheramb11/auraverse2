@@ -33,7 +33,7 @@ except Exception as e:
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"], # Allow all origins to prevent CORS/Fetch errors
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

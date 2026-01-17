@@ -1,0 +1,472 @@
+/* 
+ * SENTINEL // NERO SPATIAL THEME
+ * High-Tech Industrial / Spatial Intelligence Aesthetic
+ */
+
+:root {
+    /* Color Palette */
+    --bg-core: #000000;
+    --acc-electric: #0066ff;
+    /* Nero Blue */
+    --acc-electric-dim: rgba(0, 102, 255, 0.1);
+
+    --text-primary: #ffffff;
+    --text-secondary: #e2e8f0;
+    /* Ultra light gray */
+    --text-muted: #cbd5e1;
+    /* High contrast "muted" (actually bright) */
+
+    --border-subtle: rgba(255, 255, 255, 0.3);
+    /* Brighter borders */
+
+    --font-heading: 'Orbitron', sans-serif;
+    --font-body: 'JetBrains Mono', monospace;
+    /* Keeping Mono for technical feel */
+}
+
+/* Base Reset */
+* {
+    box-sizing: border-box;
+}
+
+/* Navbar */
+.nav-bar {
+    position: fixed;
+    top: 1.5rem;
+    left: 15%;
+    width: 70%;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    /* Transparent & Minimal */
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    /* Very subtle border */
+    border-radius: 9999px;
+    backdrop-filter: none;
+    box-shadow: none;
+}
+
+/* ... (skipping unchanged) ... */
+
+body {
+    margin: 0;
+    background-color: #0d0d0d;
+    /* Lighter Black */
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ... (skipping unchanged) ... */
+
+/* Nero Pill Button */
+.btn-pill {
+    margin-top: 3rem;
+    padding: 1rem 3rem;
+    border: 1px solid var(--text-primary);
+    border-radius: 9999px;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    text-transform: uppercase;
+    box-shadow: 0 0 15px rgba(0, 102, 255, 0.3);
+    /* Initial Glow */
+}
+
+.btn-pill:hover {
+    background: var(--text-primary);
+    color: var(--bg-core);
+    box-shadow: 0 0 40px rgba(0, 102, 255, 0.6);
+    /* Stronger Glow */
+}
+
+/* Typography Utilities */
+.font-heading {
+    font-family: var(--font-heading);
+}
+
+.text-massive {
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -2px;
+}
+
+.text-technical {
+    font-family: var(--font-body);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Global Vignette Glow (Nero Style) */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 102, 255, 0.08) 100%);
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* 
+ * LAYOUT COMPONENTS 
+ */
+
+/* Navbar */
+.nav-bar {
+    position: fixed;
+    top: 1.5rem;
+    /* Floating from top */
+    left: 15%;
+    /* Centered (100 - 70) / 2 */
+    width: 70%;
+    /* Smaller length as requested */
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent backing */
+    border: 1px solid var(--border-subtle);
+    border-radius: 9999px;
+    /* Pill shape */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.nav-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.1em;
+}
+
+.nav-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--acc-electric);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--acc-electric);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--acc-electric);
+    animation: pulse 2s infinite;
+}
+
+/* Hero Section */
+.hero-section {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 2rem;
+    padding-top: 6rem;
+    /* Account for navbar */
+}
+
+/* ... skipped ... */
+/* Grid Layout (The Work Area) */
+.interface-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    min-height: 100vh;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 8rem;
+    /* Visible padding between Navbar and Content */
+}
+
+.grid-col-left {
+    grid-column: span 4;
+    border-right: 1px solid var(--border-subtle);
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.grid-col-right {
+    grid-column: span 8;
+    position: relative;
+    background: radial-gradient(circle at center, #0a0a0a 0%, #000 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Step Indicators */
+.step-block {
+    opacity: 0.5;
+    transition: opacity 0.3s;
+}
+
+.step-block.active {
+    opacity: 1;
+}
+
+.step-number {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--text-muted);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-heading);
+}
+
+.step-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+/* Upload Area (Minimalist) */
+.upload-area {
+    width: 100%;
+    aspect-ratio: 16/9;
+    border: 1px dashed var(--border-subtle);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(255, 255, 255, 0.02);
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.upload-area:hover {
+    border-color: var(--acc-electric);
+    background-color: var(--acc-electric-dim);
+}
+
+.upload-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    z-index: 2;
+}
+
+.upload-label {
+    z-index: 2;
+}
+
+/* Metrics Display */
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.metric-val {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--acc-electric);
+    text-shadow: 0 0 10px var(--acc-electric-dim);
+}
+
+/* Player Area (Top Right) */
+.player-section {
+    flex: 0 0 25vh;
+    /* STRICT 25% HEIGHT LIMIT */
+    height: 25vh;
+    border-bottom: 1px solid var(--border-subtle);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #050505;
+    padding: 0.5rem;
+    overflow: hidden;
+    /* Prevent spill */
+}
+
+#media-preview-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#video-player,
+#image-preview {
+    height: 100%;
+    /* Fill height first */
+    width: auto;
+    /* Adjust width to keep aspect ratio */
+    max-width: 100%;
+    /* But don't overflow width */
+    object-fit: contain;
+    border: 1px solid var(--acc-electric);
+    /* Visible border */
+}
+
+.placeholder-signal {
+    text-align: center;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    animation: blink 2s infinite;
+}
+
+/* Evidence/Details Area (Bottom Right) */
+.evidence-section {
+    flex: 1;
+    /* Takes remaining space */
+    padding: 2rem;
+    overflow-y: auto;
+    background: #0f0f0f;
+    /* Slightly lighter background */
+}
+
+.evidence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+    margin-bottom: 1.5rem;
+}
+
+.evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    /* Larger cards */
+    gap: 1.5rem;
+}
+
+.evidence-card {
+    border: 1px solid var(--border-subtle);
+    background: #1a1a1a;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.evidence-card:hover {
+    border-color: var(--acc-electric);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--acc-electric-dim);
+    background: #252525;
+}
+
+.evidence-thumb {
+    width: 100%;
+    height: 120px;
+    /* Taller thumbs */
+    object-fit: cover;
+    /* Removed grayscale filter for better visibility */
+}
+
+.evidence-card:hover .evidence-thumb {
+    filter: grayscale(0%);
+}
+
+.evidence-meta {
+    padding: 0.8rem;
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    /* Larger text */
+    color: var(--text-primary);
+    /* Bright white */
+    display: flex;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.05);
+    font-weight: bold;
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+.fade-enter {
+    animation: fadeIn 0.8s forwards;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Range Input (Nero Style) */
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 2px;
+    background: var(--border-subtle);
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 12px;
+    width: 12px;
+    background: var(--acc-electric);
+    margin-top: -5px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--acc-electric);
+}

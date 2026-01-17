@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinel Deepfake Detection</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Poppins:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="static/style.css?v=HINDI_LOGO">
+</head>
+
+<body>
+
+    <div id="star-container">
+        <div class="stars"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="logo">
+            सेंटिनल फोरेंसिक्स
+        </div>
+        <div class="status-badge">SYSTEM ONLINE</div>
+    </header>
+
+    <!-- LANDING HERO -->
+    <section id="hero" class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">SPATIAL <br> INTELLIGENCE <br> ENGINE</h1>
+            <p class="hero-subtitle">Advanced forensic analysis for synthetic media detection.</p>
+            <button id="btn-init" class="btn-hero">INITIALIZE SYSTEM</button>
+        </div>
+    </section>
+
+    <main id="interface" class="dashboard-grid hidden-smooth">
+
+        <!-- Top Panel: Analysis (Reordered) -->
+        <section class="panel output-panel">
+            <h2>Analysis & Results</h2>
+
+            <!-- Video Player -->
+            <div class="media-container">
+                <div id="placeholder" class="placeholder">
+                    <p>No Media Loaded</p>
+                </div>
+                <!-- Controls enabled, playsinline for better compatibility -->
+                <video id="video-player" class="hidden" controls playsinline></video>
+                <img id="image-preview" class="hidden" alt="Preview">
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <label>VERDICT</label>
+                    <div id="verdict-text" class="value">WAITING...</div>
+                </div>
+                <div class="stat-item">
+                    <label>CONFIDENCE</label>
+                    <div id="confidence-text" class="value">0%</div>
+                </div>
+            </div>
+
+            <!-- Evidence / Anomalies -->
+            <div class="evidence-container">
+                <h3>Detected Anomalies</h3>
+                <div id="evidence-grid" class="evidence-grid">
+                    <div class="empty-state">
+                        Suspected fake frames will appear here.
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Bottom Panel: Input (Reordered) -->
+        <section class="panel input-panel">
+            <div id="drop-zone" class="upload-zone">
+                <button id="btn-browse" class="btn-browse-minimal">Upload Files</button>
+                <input type="file" id="file-input" hidden accept="video/*,image/*">
+            </div>
+
+            <div id="upload-info" class="upload-info hidden">
+                <i class="fa-solid fa-file-video"></i>
+                <span id="filename">filename.mp4</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Pointing to the CLEAN js file -->
+    <script src="sentinel_client.js?v=REVERTED"></script>
+    <script>
+        // Landing Page Logic
+        document.getElementById('btn-init').addEventListener('click', () => {
+            const hero = document.getElementById('hero');
+            const interface = document.getElementById('interface');
+
+            hero.style.opacity = '0';
+            setTimeout(() => {
+                hero.style.display = 'none';
+                interface.classList.remove('hidden-smooth');
+                interface.classList.add('visible-smooth');
+            }, 800);
+        });
+    </script>
+</body>
+
+</html>

@@ -1,12 +1,12 @@
 # Sentinel Training Dashboard
 
 **Status**: Running 🟢
-**Last Update**: Epoch 5/5 | Step 23/23
+**Last Update**: Epoch 5/5 | Step 145/145
 
 ## Metrics
 | Metric | Value |
 | :--- | :--- |
-| **Loss** | `0.0429` |
-| **Accuracy** | `100.00%` |
+| **Loss** | `0.0906` |
+| **Accuracy** | `97.32%` |
 
 > *This file is automatically updated by the training script.*

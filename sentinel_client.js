@@ -38,23 +38,47 @@ class SentinelClient {
         });
     }
 
-    handleFile(file) {
+    async handleFile(file) {
         // 1. Update UI Info
         document.getElementById('upload-info').classList.remove('hidden');
         document.getElementById('filename').textContent = file.name;
-
-        // 2. Show Preview
-        const url = URL.createObjectURL(file);
         this.placeholder.classList.add('hidden');
+        this.placeholder.style.display = 'none';
+
+        console.log("File Type:", file.type);
+
+        let previewUrl = URL.createObjectURL(file);
+
+        // HEIC Handling
+        if (file.name.toLowerCase().endsWith('.heic') || file.type === 'image/heic') {
+            console.log("HEIC detected. Converting client-side...");
+            try {
+                const convertedBlob = await heic2any({
+                    blob: file,
+                    toType: "image/jpeg",
+                    quality: 0.8
+                });
+                previewUrl = URL.createObjectURL(convertedBlob);
+                console.log("HEIC Converted successfully.");
+            } catch (e) {
+                console.warn("Client-side HEIC conversion failed. Waiting for server...", e);
+            }
+        }
 
         if (file.type.startsWith('video/')) {
-            this.video.src = url;
+            this.video.src = previewUrl;
             this.video.classList.remove('hidden');
+            this.video.style.display = 'block';
+
             this.image.classList.add('hidden');
+            this.image.style.display = 'none';
         } else {
-            this.image.src = url;
+            this.image.src = previewUrl;
             this.image.classList.remove('hidden');
+            this.image.style.display = 'block';
+
             this.video.classList.add('hidden');
+            this.video.style.display = 'none';
         }
 
         // 3. Upload & Analyze
@@ -108,6 +132,14 @@ class SentinelClient {
 
         const conf = (data.overall_confidence * 100).toFixed(1);
         document.getElementById('confidence-text').textContent = `${conf}%`;
+
+        // Update Preview if server provides a converted one (e.g. for HEIC)
+        if (data.preview_url) {
+            console.log("Updating preview with server-converted image:", data.preview_url);
+            this.image.src = data.preview_url;
+            this.image.classList.remove('hidden');
+            this.image.style.display = 'block';
+        }
 
         // Display Evidence
         const grid = document.getElementById('evidence-grid');

@@ -16,10 +16,10 @@ class SentinelHybrid(nn.Module):
         
         logger.info("Initializing SentinelHybrid Model...")
         
-        # Backbone: EfficientNet B4
+        # Backbone: EfficientNet B0 (Lite Speed Version)
         # We remove the classifier head to get features
-        logger.info("Loading EfficientNet-B4 backbone (pretrained)...")
-        self.backbone = timm.create_model('efficientnet_b4', pretrained=True, num_classes=0)
+        logger.info("Loading EfficientNet-B0 backbone (pretrained) - TURBO MODE...")
+        self.backbone = timm.create_model('efficientnet_b0', pretrained=True, num_classes=0)
         
         # Get feature dimension of the backbone
         # EfficientNet-B4 usually outputs 1792 features before the classifier

@@ -18,6 +18,7 @@ class DeepfakeResponse(BaseModel):
     fake_score: float = 0.0
     manipulated_segments: List[Segment]
     evidence: List[Evidence] = []
+    preview_url: Optional[str] = None
 
 class HealthResponse(BaseModel):
     status: str

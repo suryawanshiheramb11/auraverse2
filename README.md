@@ -104,8 +104,9 @@ Open: **[http://localhost:8000](http://localhost:8000)**
 **Model Not Found**
 - The system looks for `sentinel_model.pth` in the root. Verify it exists.
 
-**Slow Performance**
-- Deepfake detection is compute-intensive. Running on CPU (especially in Docker) will be slower than running natively on a GPU-enabled machine (e.g., Mac M-series with MPS).
+**Slow Performance / Long Videos**
+- Deepfake detection is compute-intensive. Running on CPU (especially in Docker) will be slower than native execution.
+- **Smart Sampling**: For videos longer than ~50 seconds, Sentinel automatically uses "Block Sampling" to analyze distributed segments across the video duration, ensuring fast results without timeouts.vely on a GPU-enabled machine (e.g., Mac M-series with MPS).
 
 ---
 

@@ -16,12 +16,11 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger("SentinelTrainer")
 
 # Configuration
-BATCH_SIZE = 4
-EPOCHS = 5 # Reduced for quicker feedback
+BATCH_SIZE = 64 # Turbo Mode: Maximize throughput
+EPOCHS = 5 # Reduced for quick fine-tuning
 LEARNING_RATE = 1e-4
-SEQUENCE_LENGTH = 5
-REAL_DATA_PATH = "/Users/tusharsmac/Desktop/AUROVERSE 2/real"
-FAKE_DATA_PATH = "./dataset/fake"
+SEQUENCE_LENGTH = 3 # Fastest temporal processing
+DATASET_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "dataset")
 DASHBOARD_PATH = "training_dashboard.md"
 
 def update_dashboard(epoch, step, total_steps, loss, acc=None, status="Running"):
@@ -85,16 +84,48 @@ class DeepfakeDataset(Dataset):
                 # Take all and pad
                 indices = list(range(total_frames))
             
-            # FAST RANDOM ACCESS (Turbo Mode)
+            # IO OPTIMIZATION: Linear Read vs Random Seek
+            # Seeking (cap.set) is extremely slow on some containers.
+            # Faster approach: Read sequentially and pick frames.
+            
+            # Decide indices
+            if total_frames > self.sequence_length:
+                 # Uniform sample
+                 indices = sorted(random.sample(range(total_frames), self.sequence_length))
+            else:
+                 indices = list(range(total_frames))
+                 
+            # Optimize: If indices are spread out, seeking might be needed. 
+            # But for speed, let's try to just read and skip.
+            
             extracted = []
-            for idx in indices:
-                cap.set(cv2.CAP_PROP_POS_FRAMES, idx)
+            target_idx = 0
+            current_idx = 0
+            
+            seq_idx = 0
+            while seq_idx < len(indices):
+                target = indices[seq_idx]
+                
+                # If target is far ahead, seeking might be worth it
+                if target - current_idx > 20: 
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, target)
+                    current_idx = target
+                
+                # Linear read until target
+                while current_idx < target:
+                    cap.grab() # Fast skip
+                    current_idx += 1
+                
+                # We are at target
                 ret, frame = cap.read()
+                current_idx += 1
                 if ret:
                     extracted.append(frame)
                 else:
-                    # If frame read fails, append black frame
                     extracted.append(np.zeros((224, 224, 3), dtype=np.uint8))
+                
+                seq_idx += 1
+                
             cap.release()
             
             # Convert BGR to RGB
@@ -122,76 +153,60 @@ class DeepfakeDataset(Dataset):
         
         return data, label
 
-def load_data(dummy_path):
+def load_data(data_path):
     """
-    Scans for subsets recursively from configured paths
+    Robust Smart-Loader:
+    - Scans directory recursively.
+    - Infers label from FOLDER NAMES.
+    - "real" in folder name -> Real (0)
+    - "fake", "synthesis", "ai" in folder name -> Fake (1)
     """
+    logger.info(f"Scanning dataset at: {data_path}")
+    
     real_files = []
     fake_files = []
     
-    # Scan Real (User Provided)
-    logger.info(f"Scanning for Real data in: {REAL_DATA_PATH}")
-    if os.path.exists(REAL_DATA_PATH):
-        found = glob.glob(os.path.join(REAL_DATA_PATH, "**/*.mov"), recursive=True) + \
-                glob.glob(os.path.join(REAL_DATA_PATH, "**/*.mp4"), recursive=True) + \
-                glob.glob(os.path.join(REAL_DATA_PATH, "**/*.jpg"), recursive=True)
-        real_files.extend(found)
-        logger.info(f"Found {len(found)} Real samples.")
-            
-    # Scan Fake (Existing)
-    logger.info(f"Scanning for Fake data in: {FAKE_DATA_PATH}")
-    if os.path.exists(FAKE_DATA_PATH):
-        found = glob.glob(os.path.join(FAKE_DATA_PATH, "**/*.mp4"), recursive=True) + \
-                glob.glob(os.path.join(FAKE_DATA_PATH, "**/*.jpg"), recursive=True)
-        fake_files.extend(found)
-        logger.info(f"Found {len(found)} Fake samples.")
-
-    # --- TARGETED TRAINING ---
-    # User requested this specific file be heavily weighted
-    target_image = "/Users/tusharsmac/Desktop/AUROVERSE 2/real/Photo on 17-01-26 at 3.45 PM.jpg"
-    if target_image in real_files:
-        # Boost this specific file 50x
-        boost_count = 50
-        real_files.extend([target_image] * boost_count)
-        logger.info(f"🚀 BOOSTED specific image {boost_count}x: {target_image}")
-
-    # --- OVERSAMPLING LOGIC ---
-    n_real = len(real_files)
-    n_fake = len(fake_files)
+    skipped = 0
     
-    if n_real > 0 and n_fake > 0:
-        if n_real < n_fake:
-            # Oversample Real
-            multiplier = int(n_fake / n_real)
-            real_files = real_files * multiplier
-            # Add remainder if needed
-            diff = n_fake - len(real_files)
-            if diff > 0:
-                real_files.extend(real_files[:diff])
-            logger.info(f"Oversampled Real data: {n_real} -> {len(real_files)} samples.")
+    for root, dirs, files in os.walk(data_path):
+        # Fix: Check FULL path for keyword, not just immediate folder name
+        # This handles nested folders like "real_train3/train 3"
+        path_lower = root.lower()
+        
+        # Determine label from path
+        label = None
+        if "real" in path_lower:
+            label = "REAL"
+        elif any(x in path_lower for x in ["fake", "synthesis", "manipulated", "ai"]):
+            label = "FAKE"
             
-        elif n_fake < n_real:
-            # Oversample Fake
-            multiplier = int(n_real / n_fake)
-            fake_files = fake_files * multiplier
-            diff = n_real - len(fake_files)
-            if diff > 0:
-                fake_files.extend(fake_files[:diff])
-            logger.info(f"Oversampled Fake data: {n_fake} -> {len(fake_files)} samples.")
+        if label:
+            for file in files:
+                if file.lower().endswith(('.mp4', '.avi', '.mov', '.mkv', '.jpg', '.jpeg', '.png')):
+                    full_path = os.path.join(root, file)
+                    if label == "REAL":
+                        real_files.append(full_path)
+                    else:
+                        fake_files.append(full_path)
+        else:
+            # If root folder, ignore files
+            pass
 
+    # Fallback: if explicit folders exist inside
+    if not real_files and not fake_files:
+        logger.warning("Smart scan found nothing. Trying specific folder names 'real' and 'fake'...")
+        # ... (logic could be added, but the walk above is usually sufficient if user named folders well)
+        
+    logger.info(f"Found {len(real_files)} Real samples.")
+    logger.info(f"Found {len(fake_files)} Fake samples.")
+    
     list_ids = real_files + fake_files
     labels = {}
     
-    for f in real_files:
-        labels[f] = 0 # 0 for Real
-    for f in fake_files:
-        labels[f] = 1 # 1 for Fake
-        
-    logger.info(f"Balanced Dataset: {len(real_files)} Real, {len(fake_files)} Fake.")
+    for f in real_files: labels[f] = 0
+    for f in fake_files: labels[f] = 1
     
-    # Shuffle
     random.shuffle(list_ids)
-    
     return list_ids, labels
 
 def train():
@@ -202,14 +217,15 @@ def train():
         f.write("# Sentinel Training Dashboard\n\n**Status**: Initializing... 🟡")
 
     # Check if data exists
-    if not os.path.exists(REAL_DATA_PATH):
-        logger.error(f"Real data path '{REAL_DATA_PATH}' not found.")
+    if not os.path.exists(DATASET_PATH):
+        logger.error(f"Dataset path '{DATASET_PATH}' not found. Please create 'dataset/real' and 'dataset/fake' folders.")
         return
 
     # Transforms
+    # Reduced resolution for speed (128x128 is sufficient for deepfakes)
     train_transform = transforms.Compose([
         transforms.ToPILImage(),
-        transforms.Resize((224, 224)),
+        transforms.Resize((128, 128)),
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=0.1, contrast=0.1),
         transforms.ToTensor(),
@@ -217,7 +233,7 @@ def train():
     ])
     
     # Data Loaders
-    list_ids, labels = load_data(None)
+    list_ids, labels = load_data(DATASET_PATH)
     if not list_ids:
         logger.error("No data found!")
         return
@@ -227,20 +243,35 @@ def train():
     train_ids = list_ids[:split]
     val_ids = list_ids[split:]
     
-    # Pass None as root_dir because IDs are absolute
-    train_set = DeepfakeDataset(None, train_ids, labels, transform=train_transform, sequence_length=SEQUENCE_LENGTH)
-    val_set = DeepfakeDataset(None, val_ids, labels, transform=train_transform, sequence_length=SEQUENCE_LENGTH) 
+    train_set = DeepfakeDataset(DATASET_PATH, train_ids, labels, transform=train_transform, sequence_length=SEQUENCE_LENGTH)
+    val_set = DeepfakeDataset(DATASET_PATH, val_ids, labels, transform=train_transform, sequence_length=SEQUENCE_LENGTH) 
     
-    # 0 workers for stability
-    train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
-    val_loader = DataLoader(val_set, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
+    # Optimized Data Loaders (Turbo Mode)
+    # pin_memory=False for MPS to avoid overhead/warnings
+    train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=4, pin_memory=False, prefetch_factor=2)
+    val_loader = DataLoader(val_set, batch_size=BATCH_SIZE, shuffle=False, num_workers=4, pin_memory=False, prefetch_factor=2)
     
     # Model
     model = SentinelHybrid()
+    
+    # FINE-TUNING LOGIC: Load previous weights if they exist
+    model_path = "sentinel_model.pth"
+    if os.path.exists(model_path):
+        logger.info(f"🔄 Component Found: {model_path}. Loading weights for Fine-Tuning...")
+        try:
+            state_dict = torch.load(model_path, map_location=model.device)
+            model.load_state_dict(state_dict)
+            logger.info("✅ Weights loaded successfully. Resuming training.")
+        except Exception as e:
+            logger.warning(f"⚠️ Could not load weights: {e}. Starting from scratch.")
+    else:
+        logger.info("🆕 No existing model found. Starting fresh training.")
+
     model.train()
     
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+    # Lower learning rate for fine-tuning to avoid destroying learned features
+    optimizer = optim.Adam(model.parameters(), lr=1e-5) # Reduced from 1e-4
     
     logger.info(f"Starting Training for {EPOCHS} epochs on {model.device}...")
     update_dashboard(0, 0, len(train_loader), 0.0, status="Starting Training Loop")

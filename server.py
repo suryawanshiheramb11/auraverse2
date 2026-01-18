@@ -56,7 +56,7 @@ def health_check():
     return {"status": status, "version": "2.0.0"}
 
 @app.post("/scan")
-async def scan_video(file: UploadFile = File(...)):
+def scan_video(file: UploadFile = File(...)):
     """
     Endpoint to trigger deepfake scanning. Supports Video and Images.
     """

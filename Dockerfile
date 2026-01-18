@@ -7,9 +7,8 @@ WORKDIR /app
 
 # Install system dependencies
 # Install system dependencies
-# libgl1 is the modern replacement for mesa-glx on newer Debian/Ubuntu
+# libglib2.0-0 is still often needed for some core dependencies
 RUN apt-get update && apt-get install -y \
-    libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 

@@ -9,4 +9,5 @@ echo "Initialize Cyberpunk Forensics on Port 8000"
 # pip install -r requirements.txt
 
 echo "[SYSTEM] Launching Uvicorn Server..."
-python3 -m uvicorn server:app --reload --host 0.0.0.0 --port 8000
+export OMP_NUM_THREADS=1
+python3 -m uvicorn server:app --host 0.0.0.0 --port 8000

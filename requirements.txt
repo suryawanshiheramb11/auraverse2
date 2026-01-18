@@ -7,3 +7,6 @@ timm
 opencv-python
 pillow
 numpy
+mediapipe
+transformers
+

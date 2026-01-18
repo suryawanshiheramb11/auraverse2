@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="image_38933a.png" alt="Sentinel Spatial Intelligence Engine" width="100%" />
+  <img src="https://github.com/suryawanshiheramb11/auraverse2/blob/main/latest_screenshot.jpg?raw=true" alt="Sentinel Spatial Intelligence Engine" width="100%" />
 
   <h1>🛡️ SENTINEL</h1>
   <h3>Spatial Intelligence Engine // Deepfake Forensics</h3>

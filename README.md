@@ -1,50 +1,88 @@
-# Sentinel // Deepfake Detector
+<div align="center">
+  <img src="image_38933a.png" alt="Sentinel Spatial Intelligence Engine" width="100%" />
 
-**Sentinel** is an advanced AI-powered forensic tool designed to detect deepfake media. It uses a hybrid neural network (**EfficientNet-B4 + LSTM**) to analyze video frames for manipulation artifacts and temporal inconsistencies.
+  <h1>🛡️ SENTINEL</h1>
+  <h3>Spatial Intelligence Engine // Deepfake Forensics</h3>
 
-![Sentinel Core](https://img.shields.io/badge/Status-Operational-emerald) ![Docker](https://img.shields.io/badge/Docker-Ready-blue) ![Python](https://img.shields.io/badge/Python-3.9+-yellow)
+  <p>
+    <a href="https://fuseless-wynell-unspasmodical.ngrok-free.dev/">
+      <img src="https://img.shields.io/badge/System-Operational-emerald?style=for-the-badge&logo=statuspage" alt="System Operational" />
+    </a>
+    <a href="https://github.com/suryawanshiheramb11/auraverse2/blob/main/LICENSE">
+      <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge&logo=open-source-initiative" alt="License MIT" />
+    </a>
+    <a href="https://python.org">
+      <img src="https://img.shields.io/badge/Python-3.9+-yellow?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.9+" />
+    </a>
+    <a href="https://www.docker.com/">
+      <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Ready" />
+    </a>
+  </p>
 
-## Features
-- **Hybrid Architecture**: Combines spatial features (EfficientNet) with temporal analysis (LSTM).
-- **Frame-by-Frame Forensics**: precision checking of video sequences.
-- **Visual Evidence**: Extracts and displays compromised frames with timestamps.
-- **Playback Sync**: Click evidence frames to jump to the exact moment in the video.
-- **Privacy-First**: All processing happens locally (or in your Docker container). No external APIs required.
+  <p>
+    <a href="https://fuseless-wynell-unspasmodical.ngrok-free.dev/">
+      <img src="https://img.shields.io/badge/🚀_Launch_Live_Demo-000000?style=for-the-badge&logo=vercel&logoColor=white" alt="Launch Live Demo" />
+    </a>
+  </p>
+</div>
+
+---
+
+## 📖 Overview
+
+**Sentinel** is an advanced AI-powered forensic tool designed to safeguard digital integrity. Utilizing a hybrid neural network architecture (**EfficientNet-B4 + LSTM**), Sentinel analyzes video media frame-by-frame to detect manipulation artifacts and temporal inconsistencies typical of deepfakes.
+
+> *"In an era of synthetic media, truth requires a Sentinel."*
+
+## ✨ Key Features
+
+| Feature | Description |
+| :--- | :--- |
+| **🧠 Hybrid Intelligence** | Combines **Spatial analysis** (EfficientNet) with **Temporal analysis** (LSTM) for high-accuracy detection. |
+| **🔍 Micro-Forensics** | Performs precision checking on video sequences to detect pixel-level anomalies. |
+| **⚡ Real-Time Evidence** | Extracts compromised frames with exact timestamps and confidence scores. |
+| **📼 Smart Playback** | Click on any evidence frame to instantly jump to that exact moment in the video player. |
+| **🔒 Privacy First** | All processing happens locally or within your Docker container. No external APIs required. |
+
+---
+
+## 🛠️ Tech Stack
+
+* **Core:** ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white) ![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white)
+* **Backend:** ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white) ![Uvicorn](https://img.shields.io/badge/Uvicorn-499848?style=flat-square&logo=gunicorn&logoColor=white)
+* **Frontend:** ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white) ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+* **Deployment:** ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 ---
 
 ## 🚀 Quick Start (Docker)
-The easiest way to run Sentinel is via Docker. This ensures all dependencies are isolated.
 
-1. **Build the Image**
-   ```bash
-   docker build -t deepfake-detector .
-   ```
+The fastest way to deploy Sentinel is via Docker. This ensures total isolation and consistent dependencies.
 
-2. **Run the Container**
-   ```bash
-   docker run -p 7860:7860 deepfake-detector
-   ```
+1.  **Build the Image**
+    ```bash
+    docker build -t deepfake-detector .
+    ```
 
-3. **Access the App**
-   Open your browser and navigate to:
-   👉 **[http://localhost:7860](http://localhost:7860)**
+2.  **Run the Container**
+    ```bash
+    docker run -p 7860:7860 deepfake-detector
+    ```
+
+3.  **Access the System**
+    Open your browser and navigate to:
+    👉 **[http://localhost:7860](http://localhost:7860)**
 
 ---
 
-## 🛠️ Local Installation (Python)
+## ⚙️ Local Installation (Python)
 
-If you prefer to run it directly on your machine (Mac/Linux/Windows), follow these steps.
-
-### Prerequisites
-- Python 3.9 or higher
-- Git
+If you prefer native execution (Mac/Linux/Windows), follow these steps:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/suryawanshiheramb11/auraverse2.git
+git clone [https://github.com/suryawanshiheramb11/auraverse2.git](https://github.com/suryawanshiheramb11/auraverse2.git)
 cd auraverse2
-```
 
 ### 2. Setup Virtual Environment (Recommended)
 ```bash
